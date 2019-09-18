@@ -26,7 +26,7 @@ public class UsuarioService implements UserDetailsService{
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 		Usuario usuario = client.findByUsername(username);
-		log.info("Se busca el usuario "+username);
+		log.info("Se busca el usuario por el campo username "+username);
 		if(usuario == null)
 			throw new UsernameNotFoundException("Error en el login no exieste el usuario "+username);
 		log.info("Usuario autenticado:"+username );
