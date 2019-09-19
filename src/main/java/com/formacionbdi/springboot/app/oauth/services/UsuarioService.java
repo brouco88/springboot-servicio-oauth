@@ -17,7 +17,7 @@ import com.formacionbdi.springboot.app.oauth.clients.UsuarioFeignClient;
 import com.formacionbdi.springboot.app.usuarios.commons.models.entity.Usuario;
 
 @Service
-public class UsuarioService implements UserDetailsService{
+public class UsuarioService implements UserDetailsService, IUsuarioService{
 
 	private Logger log = org.slf4j.LoggerFactory.getLogger(UsuarioService.class);
 	@Autowired
@@ -36,6 +36,11 @@ public class UsuarioService implements UserDetailsService{
 				.peek(authority -> log.info("Role: "+authority.getAuthority()))
 				.collect(Collectors.toList());
 		return new User(usuario.getUsername(), usuario.getPassword(), usuario.getEnabled(), true, true, true, authorities);
+	}
+
+	@Override
+	public Usuario findByUsername(String username) {		
+		return client.findByUsername(username);
 	}
 
 }

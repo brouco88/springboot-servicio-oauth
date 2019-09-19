@@ -1,5 +1,7 @@
 package com.formacionbdi.springboot.app.oauth.security;
 
+import java.util.Arrays;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -10,6 +12,7 @@ import org.springframework.security.oauth2.config.annotation.web.configuration.A
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableAuthorizationServer;
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerEndpointsConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerSecurityConfigurer;
+import org.springframework.security.oauth2.provider.token.TokenEnhancerChain;
 import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter;
 import org.springframework.security.oauth2.provider.token.store.JwtTokenStore;
 
@@ -18,6 +21,9 @@ import org.springframework.security.oauth2.provider.token.store.JwtTokenStore;
 public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdapter{
 
 	@Autowired
+	private InfoAdicionalToken infoAdicionalToken;
+	
+	@Autowired
 	private BCryptPasswordEncoder passwordEncoder;
 	
 	@Autowired
@@ -25,14 +31,14 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
 
 	@Override
 	public void configure(AuthorizationServerSecurityConfigurer security) throws Exception {
-		security.tokenKeyAccess("permitAll")
-		.checkTokenAccess("isAutenticated()");
+		security.tokenKeyAccess("permitAll()")
+		.checkTokenAccess("isAuthenticated()");
 	}
 
 	@Override
 	public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
 		clients.inMemory()
-		.withClient("frotendapp")
+		.withClient("frontendapp")
 		.secret(passwordEncoder.encode("12345"))
 		.scopes("read","write")
 		.authorizedGrantTypes("password","refresh_token")
@@ -42,9 +48,12 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
 
 	@Override
 	public void configure(AuthorizationServerEndpointsConfigurer endpoints) throws Exception {		
+		TokenEnhancerChain tokenEnhacerChain = new TokenEnhancerChain();
+		tokenEnhacerChain.setTokenEnhancers(Arrays.asList(infoAdicionalToken,accessTokenConverter()));
 		endpoints.authenticationManager(authenticationManager)
 		.tokenStore(tokenStore())
-		.accessTokenConverter(accessTokenConverter());
+		.accessTokenConverter(accessTokenConverter()).
+		tokenEnhancer(tokenEnhacerChain);
 	}
 
 	@Bean
