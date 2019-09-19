@@ -11,15 +11,15 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 @Configuration
 public class SpringSecurityConfig extends WebSecurityConfigurerAdapter{
-
+	
 	@Autowired
 	private UserDetailsService usuarioService;
-
+	
 	@Bean
 	public BCryptPasswordEncoder passwordEncoder() {
 		return new BCryptPasswordEncoder();
 	}
-	
+
 	@Override
 	@Autowired
 	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
@@ -34,4 +34,5 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter{
 	
 	
 	
+
 }

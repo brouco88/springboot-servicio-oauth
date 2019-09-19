@@ -10,9 +10,10 @@ import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
+@EnableFeignClients
 @EnableEurekaClient
 @SpringBootApplication
-@EnableFeignClients
+
 public class SpringbootServicioOauthApplication implements CommandLineRunner{
 
 	Logger log = LoggerFactory.getLogger(SpringbootServicioOauthApplication.class);
